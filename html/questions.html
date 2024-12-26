@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>진짜 질문 끄집어내기</title>
+</head>
+<body>
+    <h3>다양한 진짜 질문을 찾으세요.</h3>
+
+    <div id="root">
+        <span>질문을 입력하세요</span>
+        <button onclick="editName(this.previousElementSibling)">✏️</button>
+        <button onclick="addChildAnswer(this.parentNode, 1)">+</button>
+        <div></div>
+    </div>
+
+    <script>
+        function addChildAnswer(parent, depth) {
+            const childName = prompt("이유를 질문으로 입력하세요:", "Why?");
+            if (childName) {
+                const childrenContainer = parent.lastElementChild;
+                const newNode = document.createElement('div');
+                const indent = '\u00A0'.repeat(depth * 4);
+                newNode.innerHTML = `
+                    <span>${indent}${childName}</span>
+                    <button onclick="editName(this.previousElementSibling)">✏️</button>
+                    <button onclick="addChildAnswer(this.parentNode, ${depth + 1})">+</button>
+                    <div></div>
+                `;
+                childrenContainer.appendChild(newNode);
+            }
+        }
+
+        function editName(nameSpan) {
+            const currentName = nameSpan.textContent.trim();
+            const indent = nameSpan.textContent.match(/^\s*/)[0];
+            const newName = prompt("내용을 수정하세요:", currentName);
+            if (newName && newName !== currentName) {
+                nameSpan.textContent = indent + newName;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동적 버튼 및 입력 필드 생성</title>
+</head>
+<body>
+
+    <div id="root">
+        <span>진짜 질문을 입력하세요</span>
+        <button onclick="editName(this.previousElementSibling)">✏️</button>
+        <button onclick="addAnswerRow(this.parentNode, 1)">+</button>
+        <div></div>
+    </div>
+    
+    <div id="buttonContainer"></div>
+
+    <script>
+        document.getElementById('addRow').addEventListener('click', function() {
+            const container = document.getElementById('buttonContainer');
+            const row = document.createElement('div');
+
+            for (let i = 0; i < 8; i++) {
+                if (i > 0) {
+                    row.appendChild(document.createTextNode(' | '));
+                }
+
+                const button = document.createElement('button');
+                button.textContent = '+';
+                button.addEventListener('click', function() {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.placeholder = '텍스트 입력';
+                    this.parentNode.replaceChild(input, this);
+                });
+                row.appendChild(button);
+            }
+
+            container.appendChild(row);
+            container.appendChild(document.createElement('br'));
+        });
+
+        function addAnswerRow(parent, depth) {
+            const answerName = prompt("답변을 입력하세요:", "How?");
+            if (answerName) {
+                const childrenContainer = parent.lastElementChild;
+                const newNode = document.createElement('div');
+                newNode.innerHTML = `
+                    <span>${answerName}</span>
+                    <button onclick="editName(this.previousElementSibling)">✏️</button>
+                `;
+
+                for (let i = 0; i < 8; i++) {
+                    newNode.appendChild(document.createTextNode(' | '));
+
+                    const button = document.createElement('button');
+                    button.textContent = '+';
+                    button.addEventListener('click', function() {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.placeholder = '텍스트 입력';
+                        this.parentNode.replaceChild(input, this);
+                    });
+                    newNode.appendChild(button);
+                }
+
+                childrenContainer.appendChild(newNode);
+            }
+        }
+
+        function editName(nameSpan) {
+            const currentName = nameSpan.textContent.trim();
+            const indent = nameSpan.textContent.match(/^\s*/)[0];
+            const newName = prompt("내용을 수정하세요:", currentName);
+            if (newName && newName !== currentName) {
+                nameSpan.textContent = indent + newName;
+            }
+        }
+    </script>
+</body>
+</html>
